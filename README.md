@@ -29,4 +29,6 @@ A sleek, minimalistic dashboard built with React, TailwindCSS, and Vite. Designe
    ```bash
    git clone https://github.com/sheriff-2912/user-dashboard.git
    cd user-dashboard
+
+   https://user-dashboard-brown.vercel.app/
    
