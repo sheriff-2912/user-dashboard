@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function App() {
   const [active, setActive] = useState("Dashboard");
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   // Custom animated SVG icons (use currentColor so tailwind text colors control them)
   const DashboardIcon = ({ size = 18, className = "" }) => (
@@ -99,8 +100,8 @@ export default function App() {
 
   return (
     <div className="flex h-screen bg-black text-white">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gradient-to-b from-[#2b0000] to-[#1a0000] flex flex-col p-4">
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex md:w-64 bg-gradient-to-b from-[#2b0000] to-[#1a0000] flex-col p-4">
         <h1 className="text-2xl font-bold mb-6 text-white">MyDashboard</h1>
         <nav className="space-y-2">
           {sidebarItems.map((item) => {
@@ -118,7 +119,6 @@ export default function App() {
               >
                 <Icon size={18} className={`${isActive ? "text-black" : "text-white"}`} />
                 <span className="font-medium">{item.name}</span>
-                {/* subtle indicator */}
                 <span
                   className={`ml-auto w-2 h-2 rounded-full transition-opacity duration-200 ${
                     isActive ? "bg-green-400 opacity-100" : "bg-transparent opacity-0"
@@ -130,68 +130,168 @@ export default function App() {
         </nav>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 p-6 overflow-y-auto">
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
-          {stats.map((stat) => (
-            <div
-              key={stat.title}
-              className="bg-[#1a1a1a] p-4 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 hover:scale-[1.01] duration-200"
-            >
-              <h2 className="text-sm text-gray-400">{stat.title}</h2>
-              <p className="text-2xl font-bold">{stat.value}</p>
-              <span
-                className={`text-sm ${
-                  stat.change.startsWith("+") ? "text-green-400" : "text-red-400"
-                }`}
-              >
-                {stat.change}
-              </span>
-            </div>
-          ))}
+      {/* Mobile Sidebar (slide-over) */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-[#2b0000] to-[#1a0000] p-4 transform transition-transform duration-300 md:hidden ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+        aria-hidden={!mobileOpen}
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold">MyDashboard</h2>
+          <button
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close menu"
+            className="p-2 rounded-md hover:bg-white/10"
+          >
+            ✕
+          </button>
         </div>
 
-        {/* Data Table */}
-        <div className="bg-[#1a1a1a] p-6 rounded-2xl shadow">
-          <h2 className="text-lg font-semibold mb-4">User Data</h2>
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-gray-700 text-gray-400">
-                <th className="pb-2">ID</th>
-                <th className="pb-2">Name</th>
-                <th className="pb-2">Role</th>
-                <th className="pb-2">Status</th>
-                <th className="pb-2">Last Login</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map((row) => (
-                <tr
-                  key={row.id}
-                  className="border-b border-gray-800 hover:bg-gray-900 transition-colors duration-150"
+        <nav className="space-y-2">
+          {sidebarItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = active === item.name;
+            return (
+              <button
+                key={item.name}
+                onClick={() => {
+                  setActive(item.name);
+                  setMobileOpen(false);
+                }}
+                className={`group flex items-center gap-3 px-3 py-2 rounded-lg w-full text-left transition-colors duration-200 transform ${
+                  isActive
+                    ? "bg-white text-black shadow-lg scale-100"
+                    : "text-white hover:bg-white/5 hover:scale-[1.01]"
+                }`}
+              >
+                <Icon size={18} className={`${isActive ? "text-black" : "text-white"}`} />
+                <span className="font-medium">{item.name}</span>
+              </button>
+            );
+          })}
+        </nav>
+      </aside>
+
+      {/* Overlay when mobile menu open */}
+      {mobileOpen && (
+        <button
+          aria-hidden="true"
+          className="fixed inset-0 z-30 bg-black/50 md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      <div className="flex-1 flex flex-col">
+        {/* Top bar for mobile / small screens */}
+        <header className="md:hidden flex items-center justify-between p-4 border-b border-gray-800">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileOpen(true)}
+              aria-label="Open menu"
+              aria-expanded={mobileOpen}
+              className="p-2 rounded-md hover:bg-white/10"
+            >
+              {/* simple hamburger */}
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12h18M3 6h18M3 18h18" />
+              </svg>
+            </button>
+            <h1 className="text-lg font-semibold">MyDashboard</h1>
+          </div>
+          <div className="text-sm text-gray-400">Signed in as <span className="text-white font-medium">Admin</span></div>
+        </header>
+
+        {/* Main content */}
+        <main className="p-4 md:p-6 overflow-y-auto">
+          {/* Stats: responsive columns */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            {stats.map((stat) => (
+              <div
+                key={stat.title}
+                className="bg-[#1a1a1a] p-4 rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 hover:scale-[1.01] duration-200"
+              >
+                <h2 className="text-sm text-gray-400">{stat.title}</h2>
+                <p className="text-2xl font-bold">{stat.value}</p>
+                <span
+                  className={`text-sm ${
+                    stat.change.startsWith("+") ? "text-green-400" : "text-red-400"
+                  }`}
                 >
-                  <td className="py-2">{row.id}</td>
-                  <td>{row.name}</td>
-                  <td>{row.role}</td>
-                  <td
-                    className={`${
-                      row.status === "Active"
-                        ? "text-green-400"
-                        : row.status === "Inactive"
-                        ? "text-red-400"
-                        : "text-yellow-400"
-                    }`}
-                  >
-                    {row.status}
-                  </td>
-                  <td>{row.lastLogin}</td>
-                </tr>
+                  {stat.change}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Data Table / Mobile list */}
+          <div className="bg-[#1a1a1a] p-4 md:p-6 rounded-2xl shadow">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">User Data</h2>
+              <div className="hidden sm:flex items-center gap-2 text-sm text-gray-400">
+                Showing {tableData.length} users
+              </div>
+            </div>
+
+            {/* Mobile stacked cards */}
+            <div className="sm:hidden space-y-3">
+              {tableData.map((row) => (
+                <div key={row.id} className="bg-[#121212] p-3 rounded-lg border border-gray-800">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-sm text-gray-400">ID #{row.id}</div>
+                    <div className={`text-sm ${
+                      row.status === "Active" ? "text-green-400" : row.status === "Inactive" ? "text-red-400" : "text-yellow-400"
+                    }`}>{row.status}</div>
+                  </div>
+                  <div className="text-white font-medium">{row.name}</div>
+                  <div className="text-sm text-gray-400">{row.role}</div>
+                  <div className="text-xs text-gray-500 mt-2">Last login: {row.lastLogin}</div>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </main>
+            </div>
+
+            {/* Desktop / tablet table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[640px]">
+                <thead>
+                  <tr className="border-b border-gray-700 text-gray-400">
+                    <th className="pb-2 pr-6">ID</th>
+                    <th className="pb-2 pr-6">Name</th>
+                    <th className="pb-2 pr-6">Role</th>
+                    <th className="pb-2 pr-6">Status</th>
+                    <th className="pb-2">Last Login</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableData.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="border-b border-gray-800 hover:bg-gray-900 transition-colors duration-150"
+                    >
+                      <td className="py-3 pr-6">{row.id}</td>
+                      <td className="pr-6">{row.name}</td>
+                      <td className="pr-6">{row.role}</td>
+                      <td
+                        className={`pr-6 ${
+                          row.status === "Active"
+                            ? "text-green-400"
+                            : row.status === "Inactive"
+                            ? "text-red-400"
+                            : "text-yellow-400"
+                        }`}
+                      >
+                        {row.status}
+                      </td>
+                      <td>{row.lastLogin}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

@@ -1,17 +1,32 @@
-<<<<<<< HEAD
-# React + Vite
+# 🧠 User Dashboard — React + TailwindCSS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A sleek, minimalistic dashboard built with React, TailwindCSS, and Vite. Designed with a tech-forward aesthetic using black, ox-blood, and white as the primary palette. Features include a responsive sidebar, statistics cards, and a dynamic data table.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- ⚙️ **Sidebar Navigation** with `lucide-react` icons
+- 📊 **Statistics Cards** for quick data insights
+- 📁 **Data Table** with five sample columns
+- 🎨 **Custom Theme**: Black background, ox-blood accents, white text
+- 🖱️ **Hover Effects** for enhanced UX
+- ⚡ **Vite-Powered** for fast development and hot reload
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# user-dashboard
-Appliso - module - 3
->>>>>>> 77011c1f93e72d4902541cfd267e53efaf4a77b3
+
+## 🛠️ Tech Stack
+
+| Technology     | Purpose                        |
+|----------------|--------------------------------|
+| React          | UI Framework                   |
+| TailwindCSS    | Utility-first CSS styling      |
+| Vite           | Build tool & dev server        |
+| Lucide-react   | Icon library for navigation    |
+
+
+## 🧩 Setup Instructions
+
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/sheriff-2912/user-dashboard.git
+   cd user-dashboard
+   
